@@ -1,0 +1,5 @@
+{
+  "root": "C:/path/to/the/folder/that/holds/the/repositories",
+  "teamRepo": "C:/path/to/the/team/Android/Studio/project",
+  "gh": "gh"
+}

@@ -1,0 +1,11 @@
+[
+  { "label": "Live simulator", "url": "https://ftc-simbench-pro.pages.dev" },
+  { "label": "Preview: physics branch", "url": "https://titan-physics.ftc-simbench-pro.pages.dev" },
+  { "label": "Preview: Java VM branch", "url": "https://titan-jvm.ftc-simbench-pro.pages.dev" },
+  { "label": "Preview: app branch", "url": "https://titan-app.ftc-simbench-pro.pages.dev" },
+  { "label": "Simulator source", "url": "https://github.com/LILRINO71/ftc-simbench-pro" },
+  { "label": "Simulator CI", "url": "https://github.com/LILRINO71/ftc-simbench-pro/actions" },
+  { "label": "Team code CI", "url": "https://github.com/LILRINO71/IDK-WHAT-TEAM-IM-ON/actions" },
+  { "label": "This queue", "url": "https://github.com/LILRINO71/titan-autopilot/blob/main/mission/queue.json" },
+  { "label": "Runbook", "url": "https://github.com/LILRINO71/titan-autopilot/blob/main/RUNBOOK.md" }
+]

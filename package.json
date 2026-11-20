@@ -1,0 +1,12 @@
+{
+  "name": "titan-autopilot",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "The work queue and runner that keep Operation Titan moving between sessions.",
+  "scripts": {
+    "test": "node --test \"tests/**/*.test.mjs\"",
+    "status": "node tools/titan.mjs status",
+    "render": "node tools/titan.mjs render"
+  }
+}
