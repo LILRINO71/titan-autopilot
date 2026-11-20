@@ -8,7 +8,7 @@
 //   node tools/titan.mjs done <id> --result "what proves it: commits, test counts, links"
 //   node tools/titan.mjs block <id> --why "what stopped it and what would unblock it"
 //   node tools/titan.mjs todo <id>               put an item back
-//   node tools/titan.mjs add --file item.json [--first]
+//   node tools/titan.mjs add --file item.json [--first | --before <id>]
 //   node tools/titan.mjs log --run <id> [--item <id>] --text "one line for the journal"
 //   node tools/titan.mjs beat --run <id>         "still working" (start, done, block and log say it too)
 //   node tools/titan.mjs unlock --run <id>       the run is over
@@ -105,8 +105,9 @@ try {
     if (typeof run === 'string') beat(run);
     console.log(id + ' is now ' + state + '. ' + brief(q));
   } else if (cmd === 'add') {
-    const f = flag('file'); if (typeof f !== 'string') die('add --file item.json [--first]');
-    const q = L.add(readQueue(), readJson(path.resolve(f)), now(), !!flag('first'));
+    const f = flag('file'); if (typeof f !== 'string') die('add --file item.json [--first | --before <id>]');
+    const before = flag('before');
+    const q = L.add(readQueue(), readJson(path.resolve(f)), now(), typeof before === 'string' ? { before } : !!flag('first'));
     writeQueue(q); journal({ item: readJson(path.resolve(f)).id, text: 'added to the queue' });
     console.log('added. ' + brief(q));
   } else if (cmd === 'log') {

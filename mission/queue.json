@@ -71,7 +71,7 @@
     {
       "id": "land-physics",
       "title": "Review and land the physics branch (PHY-2, PHY-4, PHY-7)",
-      "state": "doing",
+      "state": "todo",
       "kind": "land",
       "repo": "ftc-simbench-pro",
       "branch": "titan/physics",
@@ -82,9 +82,7 @@
         "pushed to main, CI green, and the live build hash equals a local build:ship"
       ],
       "needs": [],
-      "run": "fable-2026-11-20-0640",
-      "updated": "2026-11-20T14:39:43.910Z",
-      "started": "2026-11-20T14:39:43.910Z"
+      "updated": "2026-11-20T15:11:09.270Z"
     },
     {
       "id": "land-jvm",
@@ -105,7 +103,7 @@
     {
       "id": "land-app",
       "title": "Review and land the app branch (app F2 to F7)",
-      "state": "todo",
+      "state": "done",
       "kind": "land",
       "repo": "ftc-simbench-pro",
       "branch": "titan/app",
@@ -116,7 +114,11 @@
         "the full suite ends fail 0 on the rebased branch",
         "pushed to main, CI green, the live page loads the default robot with no new console errors"
       ],
-      "needs": []
+      "needs": [],
+      "run": "fable-2026-11-20-0640",
+      "updated": "2026-11-20T15:14:47.959Z",
+      "started": "2026-11-20T15:11:09.395Z",
+      "result": "On main as b7fc867..6b7671a (11 commits): minifier and compile check (F5), ignores per robot and OpMode (F2), rooms and TURN only for the site's pages (F3), frame protection and a report-only script policy (F4), leaderboard in a Durable Object (F6, needs the owner's binding), ledger removed (F7). Independent review found no blocker and 4 low defects, all fixed with tests. Suite 1107 pass, CI green, live build 4c43c74c equals the local build; seen in the page: Ignore stays with its robot and OpMode, exact geometry loads (3.4 M triangles), 0 console errors. Left for later items: enforcing the policy (csp-decision; OpenCascade needs unsafe-eval in its workers, and there is no report endpoint), missing-asset-cache, room-rate-limit."
     },
     {
       "id": "auto-drive-from-teleop",
@@ -192,6 +194,60 @@
         "reviewed, full suite green, pushed, CI green"
       ],
       "needs": []
+    },
+    {
+      "state": "todo",
+      "needs": [],
+      "id": "cad-kind-names",
+      "title": "A part named \"controller\" is not a wheel (CAD-2)",
+      "kind": "fix",
+      "repo": "ftc-simbench-pro",
+      "brief": "solidKind (src/hull.js about line 134) matches \"roller\" with no word boundary and before electronics and belts, so Core Motor Controller, Logitech F310 Controller and Roller Chain are wheels; the robot frame is then built on electronics boxes (a real 2016 robot ends 483 mm under its own floor) and chains weigh 7 times too much. Test electronics (controller, hub, module, board) and belt or chain before wheels; a word-bounded roller not followed by chain. dtOnFloor (src/drivetrain.js about 325): with fewer than two wheels level, return none so the bbox floor is used and said. robotFrame: if more than 2 % of points end below -10 mm, fall back to the bbox floor and say why. Finding and script: hub docs/titan/audit/cad (CAD-2, repro/cad-kind-roller.mjs). No special case for one file: a table of names in the test.",
+      "done_when": [
+        "the audit script: none of the six names is a wheel; ftc8375 has no solid more than 10 mm below the floor",
+        "the any-robot corpus stays 14/14",
+        "a test that fails before the change",
+        "reviewed, full suite green, pushed, CI green, live build hash equals a local build"
+      ],
+      "added": "2026-11-20T15:13:49.485Z",
+      "updated": "2026-11-20T15:13:49.485Z"
+    },
+    {
+      "state": "todo",
+      "needs": [],
+      "id": "cad-wrong-robot-binding",
+      "title": "Another robot's code is not bound to this robot's lift and arm without asking (CAD-1)",
+      "kind": "fix",
+      "repo": "ftc-simbench-pro",
+      "brief": "A BIOBUZZ OpMode (intake motor, outtake1 and outtake2 flywheels) on the default INTO THE DEEP robot binds outtake1 and outtake2 to the Outtake arm by a shared word (score 80 binds outright) and intake to the lift by elimination, with no question asked. Decision already made: elimination (only-one, src/bind.js about 282) is allowed only when another device was bound by strong evidence (spec, declaration or an exact name), and only when the way the code uses the device fits the joint: a joint with two finite limits needs position control (target positions, encoder reads, servo positions); a power-only or velocity motor never goes there. In autoMap.one() (src/mapping.js) a shared word counts only in the joint's own id or mate name, not in a carried part's path, and subsystem words (outtake, deposit) drop to the 55 tier. Otherwise ask, offering that candidate first. Finding and script: hub docs/titan/audit/cad (CAD-1, repro/cad-bind-elimination.mjs). Look at it in the page with the team's Meet0MainTeleOp on the default robot: the questions must read well.",
+      "done_when": [
+        "the audit script: intake, outtake1 and outtake2 are left unbound and asked about",
+        "the import-zip \"Ready to drive\" case and the into-the-deep tests stay green",
+        "seen in the page: the team's TeleOp on the default robot asks instead of moving the lift",
+        "a test that fails before the change",
+        "reviewed, full suite green, pushed, CI green, live build hash equals a local build"
+      ],
+      "added": "2026-11-20T15:13:49.561Z",
+      "updated": "2026-11-20T15:13:49.561Z"
+    },
+    {
+      "state": "todo",
+      "needs": [
+        "land-physics"
+      ],
+      "id": "cad-moving-footprint",
+      "title": "The robot's collision shape follows its mechanisms (CAD-3)",
+      "kind": "fix",
+      "repo": "ftc-simbench-pro",
+      "brief": "One fixed box from the drawn pose (Field.footprintOf, computed once in src/app.js) stands for the robot against walls, obstacles, robots and balls. The default robot reaches 680 x 450 mm with its intake out but collides as 465 x 450 mm always; a robot drawn extended collides as extended always. Precompute each joint's extreme points at setup (at most 26 per moving link); each tick pose them with jointValues and jointMove (the transforms robotSize in src/robotcheck.js already computes) and join them with the frame box, keeping ox and oy. Measured cost: 1 to 2 microseconds a tick. Payload mouths are in the footBox frame (AGENTS.md, Game pieces): they must not move when the box grows; check tests/payload.test.mjs. Finding and script: hub docs/titan/audit/cad (CAD-3, repro/cad-footprint.mjs). Needs the physics branch in first (stopAgainst changes there).",
+      "done_when": [
+        "the default robot with the extension at its limit collides at 2*hx >= 0.66 m, and at the drawn size when retracted",
+        "the CPU ratchet still passes; mouths unchanged",
+        "a test that fails before the change",
+        "reviewed, full suite green, pushed, CI green, live build hash equals a local build"
+      ],
+      "added": "2026-11-20T15:13:49.639Z",
+      "updated": "2026-11-20T15:13:49.639Z"
     },
     {
       "id": "wall-contact",
@@ -272,6 +328,56 @@
       "needs": [
         "actuator-model"
       ]
+    },
+    {
+      "state": "todo",
+      "needs": [],
+      "id": "cad-vendor-mass",
+      "title": "A vendor part is weighed once, however many solids draw it (CAD-4)",
+      "kind": "fix",
+      "repo": "ftc-simbench-pro",
+      "brief": "vendorMassFor (src/inertia.js about 136) matches one solid's own name and partMass gives every match the whole figure. On the default robot two Control Hubs drawn as two solids each weigh 1.080 kg (the table says at most 0.460) and four mecanum wheels drawn as 91 solids each weigh 0.358 kg by density (the table says 1.340). Group solids by the innermost sub-assembly node (solid.asm) or leaf occurrence that matches a vendor row; give the group the figure once, spread by hull volume; skip the per-solid test inside a matched group. Finding and script: hub docs/titan/audit/cad (CAD-4, repro/cad-vendor-mass.mjs).",
+      "done_when": [
+        "default robot: hubs 0.46 +- 0.01 kg, wheels 1.34 +- 0.05 kg; a hub drawn as one solid still 0.27 kg",
+        "a test that fails before the change",
+        "reviewed, full suite green, pushed, CI green, live build hash equals a local build"
+      ],
+      "added": "2026-11-20T15:13:49.719Z",
+      "updated": "2026-11-20T15:13:49.719Z"
+    },
+    {
+      "state": "todo",
+      "needs": [],
+      "id": "cad-relation-sign",
+      "title": "A mate relation drives its follower the right way from either end (CAD-5)",
+      "kind": "fix",
+      "repo": "ftc-simbench-pro",
+      "brief": "src/mates.js about 523: a relation's ratio ignores the sign s that mateTravel applies when the joint tree reaches a mate from its second end, so the same cascade lift described with the carriage mate's ends swapped moves its carriage -10 mm for +10 mm of stage; and followQ (src/jointspec.js about 84) never clamps a follower to its own limits. Store s on each mate joint; ratio = (reverse ? -1 : 1) * inv0 * inv1 * k * s_leader * s_follower, the same for rack-and-pinion and screw relations; clamp followQ to the follower's limits. Finding and script: hub docs/titan/audit/cad (CAD-5, repro/cad-relation-sign.mjs). No Onshape API calls: the generator's mated robot is the fixture.",
+      "done_when": [
+        "both descriptions of the mated robot give the same ratio and the same world motion; a follower never leaves its limits",
+        "a test that fails before the change",
+        "reviewed, full suite green, pushed, CI green, live build hash equals a local build"
+      ],
+      "added": "2026-11-20T15:13:49.797Z",
+      "updated": "2026-11-20T15:13:49.797Z"
+    },
+    {
+      "state": "todo",
+      "needs": [],
+      "id": "cad-step-robustness",
+      "title": "A cut-off, surface-only or non-English STEP is read honestly (CAD-6, 7, 8)",
+      "kind": "fix",
+      "repo": "ftc-simbench-pro",
+      "brief": "Three small parser gaps in src/step.js. (CAD-6) a truncated file becomes a smaller robot with no warning: add cad.warnings, shown on the import card, when ENDSEC or the end marker is missing or more than 1 % of references point nowhere. (CAD-7) part names with ISO 10303-21 escapes lose their letters: decode backslash-X2 (4-hex UTF-16 units until backslash-X0), backslash-X4, backslash-X plus two hex (Latin-1) and backslash-S. (CAD-8) a surfaces-only export is weighed as solids: record whether a leaf reaches a solid B-rep; surface-only leaves are massless and the count is reported, as the Onshape link route already does. One commit each. Findings and script: hub docs/titan/audit/cad (repro/cad-robustness.mjs).",
+      "done_when": [
+        "a 90 % cut of a corpus robot carries a warning the page shows",
+        "the two names in the audit round-trip",
+        "the surface-only file weighs 0 kg and says so",
+        "a test that fails before the change",
+        "reviewed, full suite green, pushed, CI green, live build hash equals a local build"
+      ],
+      "added": "2026-11-20T15:13:49.861Z",
+      "updated": "2026-11-20T15:13:49.861Z"
     },
     {
       "id": "team-robot-rules",
@@ -370,7 +476,7 @@
     {
       "id": "cad-import-audit",
       "title": "Audit the CAD import: frames, joints, mass, collision shape",
-      "state": "todo",
+      "state": "done",
       "kind": "audit",
       "repo": "ftc-simbench-pro",
       "brief": "The fifth audit area, not yet done: src/step.js, frame.js, urdf.js, mates.js, onshapelink.js, onshapecad.js, bind.js, jointspec.js, meshfiles.js, inertia.js. Read only. Use exported files and the kept Onshape answers on disk: no Onshape API calls. Same standard as the others: every finding has a script. Also look at why a device named 'intake' is bound to a lift by elimination (seen with the team's code on the default robot).",
@@ -378,7 +484,43 @@
         "findings.md, knowledge.md and repro scripts in the hub's docs/titan/audit/cad",
         "new items in this queue for the findings worth fixing"
       ],
-      "needs": []
+      "needs": [],
+      "result": "8 reproduced findings (3 high, 3 medium, 2 low) with scripts, plus knowledge.md, in the hub's docs/titan/audit/cad. Six new queue items: cad-kind-names, cad-wrong-robot-binding, cad-moving-footprint, cad-vendor-mass, cad-relation-sign, cad-step-robustness. Not covered: urdf/meshfiles in depth, the joint finder on real files, four-bars.",
+      "updated": "2026-11-20T15:14:48.278Z"
+    },
+    {
+      "state": "todo",
+      "needs": [],
+      "id": "missing-asset-cache",
+      "title": "A missing file is a 404, not the page cached for a year",
+      "kind": "fix",
+      "repo": "ftc-simbench-pro",
+      "brief": "Seen on the live site 2026-11-20: GET /engine-00000000.js answers 200 text/html (the app page) with Cache-Control: immutable, max-age one year, because Cloudflare Pages treats a site with no 404.html as a single-page app and the _headers rule for /engine-*.js still applies. A tab left open across a deploy that asks for the old engine file caches the page under that address; if a later deploy brings the same engine hash back, that browser has a broken worker for a year. Add a small 404.html to the build output (check first that nothing relies on the fallback: /terms, /privacy, /support and /fragment are real files; the Functions under /room, /onshape and /leaderboard are not affected) and make sure the 404 itself is not sent as immutable (look at the real headers on a branch preview before landing: https://<branch>.ftc-simbench-pro.pages.dev). Also make the page say \"a new version is out, reload\" when its worker file fails to load.",
+      "done_when": [
+        "on the preview: a missing /engine-*.js is 404 and not cacheable for a year; /, /terms, /privacy, /support, /fragment still 200",
+        "a test on the build output",
+        "a test that fails before the change",
+        "reviewed, full suite green, pushed, CI green, live build hash equals a local build"
+      ],
+      "added": "2026-11-20T15:13:49.940Z",
+      "updated": "2026-11-20T15:13:49.940Z"
+    },
+    {
+      "state": "todo",
+      "needs": [],
+      "id": "room-rate-limit",
+      "title": "TURN credentials and rooms are rate limited per client",
+      "kind": "fix",
+      "repo": "ftc-simbench-pro",
+      "brief": "functions/room: the origin rule keeps other sites out, but a script that writes the headers can still mint TURN credentials and open rooms without limit, and both are billed to the site (noted by the builder and the reviewer of the app branch). Add a small per-client limit (by CF-Connecting-IP, in memory in the Durable Object or with the Cache API; nothing that costs money) on /room/turn and on opening a room, generous for a classroom behind one address. The owner has not switched rooms on yet (ROOMS and TURN are unbound), so this is before first use.",
+      "done_when": [
+        "a burst from one client is refused after the limit and a classroom-sized use is not",
+        "tests in tests/relay.test.mjs",
+        "a test that fails before the change",
+        "reviewed, full suite green, pushed, CI green, live build hash equals a local build"
+      ],
+      "added": "2026-11-20T15:13:50.019Z",
+      "updated": "2026-11-20T15:13:50.019Z"
     },
     {
       "id": "first-load-weight",

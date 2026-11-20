@@ -100,7 +100,12 @@ export function move(queue, id, state, fields, now) {
 export function add(queue, item, now, first) {
   const it = Object.assign({ state: 'todo', needs: [] }, item, { added: now, updated: now });
   const q = Object.assign({}, queue, { items: queue.items.slice() });
-  if (first) { const i = q.items.findIndex((x) => x.state === 'todo'); q.items.splice(i < 0 ? q.items.length : i, 0, it); } else q.items.push(it);
+  // `first` is true (ahead of everything still to do), or {before: id} (just ahead of that item)
+  if (first && typeof first === 'object') {
+    const i = q.items.findIndex((x) => x.id === first.before);
+    if (i < 0) throw new Error('no item "' + first.before + '" to put it before');
+    q.items.splice(i, 0, it);
+  } else if (first) { const i = q.items.findIndex((x) => x.state === 'todo'); q.items.splice(i < 0 ? q.items.length : i, 0, it); } else q.items.push(it);
   const errors = validate(q);
   if (errors.length) throw new Error(errors.join('; '));
   return q;

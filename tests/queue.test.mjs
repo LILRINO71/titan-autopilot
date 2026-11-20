@@ -82,6 +82,10 @@ test('queue: a run can add work it found, at the end or at the front of what is 
   assert.deepEqual(L.add(q, item('c'), T0, true).items.map((x) => x.id), ['a', 'c', 'b']);
   assert.throws(() => L.add(q, item('b'), T0), /used twice/);
   assert.throws(() => L.add(q, { id: 'z' }, T0), /no title/);
+  // or just before a named item, so serious work can go ahead of minor work
+  const q3 = Q(item('a'), item('b'), item('d'));
+  assert.deepEqual(L.add(q3, item('c'), T0, { before: 'd' }).items.map((x) => x.id), ['a', 'b', 'c', 'd']);
+  assert.throws(() => L.add(q3, item('c'), T0, { before: 'nope' }), /no item "nope"/);
 });
 
 test('lock: free, held, and stale after two silent hours', () => {
