@@ -206,7 +206,7 @@
       ]
     },
     {
-      "state": "todo",
+      "state": "done",
       "needs": [],
       "id": "opmode-list",
       "title": "Helper enums are not OpModes, and an OpMode with a bracket in its name keeps it",
@@ -221,7 +221,10 @@
         "reviewed, full suite green, pushed, CI green, live build hash equals a local build"
       ],
       "added": "2026-11-20T19:41:39.982Z",
-      "updated": "2026-11-20T19:41:39.982Z"
+      "updated": "2026-11-20T20:04:42.822Z",
+      "run": "fable-2026-11-20-1125",
+      "started": "2026-11-20T20:00:24.032Z",
+      "result": "On main as 53453de and efafab9. With a team's real project in the page: 21 OpModes instead of 23 (helper enums are helpers again), and names with brackets show as the Driver Station shows them instead of (unnamed). One reader of the annotation (javaOpModeTag in src/java.js) for the page and the headless tools. Adversarial review: 8 findings, fixed or accepted; a browser left by the old page is cleaned up on load (seen in the page). Suite 1113 pass, CI green, live build 4365b113 equals the local build."
     },
     {
       "id": "stale-shot-settings",
