@@ -137,6 +137,44 @@
       ]
     },
     {
+      "state": "todo",
+      "needs": [],
+      "id": "cad-wrong-robot-binding",
+      "title": "Another robot's code is not bound to this robot's lift and arm without asking (CAD-1)",
+      "kind": "fix",
+      "repo": "ftc-simbench-pro",
+      "brief": "A BIOBUZZ OpMode (intake motor, outtake1 and outtake2 flywheels) on the default INTO THE DEEP robot binds outtake1 and outtake2 to the Outtake arm by a shared word (score 80 binds outright) and intake to the lift by elimination, with no question asked. Decision already made: elimination (only-one, src/bind.js about 282) is allowed only when another device was bound by strong evidence (spec, declaration or an exact name), and only when the way the code uses the device fits the joint: a joint with two finite limits needs position control (target positions, encoder reads, servo positions); a power-only or velocity motor never goes there. In autoMap.one() (src/mapping.js) a shared word counts only in the joint's own id or mate name, not in a carried part's path, and subsystem words (outtake, deposit) drop to the 55 tier. Otherwise ask, offering that candidate first. Finding and script: hub docs/titan/audit/cad (CAD-1, repro/cad-bind-elimination.mjs). Look at it in the page with the team's Meet0MainTeleOp on the default robot: the questions must read well.",
+      "done_when": [
+        "the audit script: intake, outtake1 and outtake2 are left unbound and asked about",
+        "the import-zip \"Ready to drive\" case and the into-the-deep tests stay green",
+        "seen in the page: the team's TeleOp on the default robot asks instead of moving the lift",
+        "a test that fails before the change",
+        "reviewed, full suite green, pushed, CI green, live build hash equals a local build"
+      ],
+      "added": "2026-11-20T15:13:49.561Z",
+      "updated": "2026-11-20T19:44:15.808Z"
+    },
+    {
+      "state": "todo",
+      "needs": [
+        "cad-wrong-robot-binding"
+      ],
+      "id": "plain-robot-for-code",
+      "title": "Code dropped with no CAD of its own runs on a plain robot, not on someone else's",
+      "kind": "build",
+      "repo": "ftc-simbench-pro",
+      "brief": "Seen in the page 2026-11-20: a BIOBUZZ team's code dropped onto the built-in INTO THE DEEP robot is bound to that robot's lift and arm (CAD-1), and the Shot tab then reports the flywheel motor as \"From the code: 117 rpm\" because the motor figure comes from the arm joint it was wrongly bound to. Fixing the binding rules (item cad-wrong-robot-binding) makes the page ask; this item gives the team the right answer to pick. When code is added while the robot is still the built-in default and its devices do not fit that robot (no strong binding for any mechanism device, or roles such as a shooter that the robot has no joint for), offer, and by default use, a plain robot made from the code: an 18 in box on the drive the code describes (the headless tool already has one: tools/run-opmode.mjs, its field option), with the game-piece mouths of src/payload.js, saying in one line what it is and how to load the team's own CAD or go back to the default robot. The team's code must never move another robot's mechanisms without being asked. Decide the wording and the placement in the page with the impeccable or frontend-design skill; look at it in a browser with the team's Meet0MainTeleOp (C:/Users/hiheo/OneDrive/Documentos/GitHub/Quickstart, read only).",
+      "done_when": [
+        "dropping the team's project onto the default robot ends on a plain robot that drives, takes in and shoots, with one clear line saying so",
+        "the default robot's own OpModes still run on the default robot",
+        "a robot the user loaded is never replaced",
+        "a test that fails before the change",
+        "reviewed, full suite green, pushed, CI green, live build hash equals a local build"
+      ],
+      "added": "2026-11-20T19:41:40.063Z",
+      "updated": "2026-11-20T19:44:17.094Z"
+    },
+    {
       "id": "headless-stop-and-carry",
       "title": "The headless runner presses STOP and can carry statics from Auto to TeleOp (JV-9)",
       "state": "todo",
@@ -231,44 +269,6 @@
       "updated": "2026-11-20T19:23:43.032Z",
       "run": "fable-2026-11-20-1125",
       "started": "2026-11-20T19:23:43.032Z"
-    },
-    {
-      "state": "todo",
-      "needs": [],
-      "id": "cad-wrong-robot-binding",
-      "title": "Another robot's code is not bound to this robot's lift and arm without asking (CAD-1)",
-      "kind": "fix",
-      "repo": "ftc-simbench-pro",
-      "brief": "A BIOBUZZ OpMode (intake motor, outtake1 and outtake2 flywheels) on the default INTO THE DEEP robot binds outtake1 and outtake2 to the Outtake arm by a shared word (score 80 binds outright) and intake to the lift by elimination, with no question asked. Decision already made: elimination (only-one, src/bind.js about 282) is allowed only when another device was bound by strong evidence (spec, declaration or an exact name), and only when the way the code uses the device fits the joint: a joint with two finite limits needs position control (target positions, encoder reads, servo positions); a power-only or velocity motor never goes there. In autoMap.one() (src/mapping.js) a shared word counts only in the joint's own id or mate name, not in a carried part's path, and subsystem words (outtake, deposit) drop to the 55 tier. Otherwise ask, offering that candidate first. Finding and script: hub docs/titan/audit/cad (CAD-1, repro/cad-bind-elimination.mjs). Look at it in the page with the team's Meet0MainTeleOp on the default robot: the questions must read well.",
-      "done_when": [
-        "the audit script: intake, outtake1 and outtake2 are left unbound and asked about",
-        "the import-zip \"Ready to drive\" case and the into-the-deep tests stay green",
-        "seen in the page: the team's TeleOp on the default robot asks instead of moving the lift",
-        "a test that fails before the change",
-        "reviewed, full suite green, pushed, CI green, live build hash equals a local build"
-      ],
-      "added": "2026-11-20T15:13:49.561Z",
-      "updated": "2026-11-20T15:13:49.561Z"
-    },
-    {
-      "state": "todo",
-      "needs": [
-        "cad-wrong-robot-binding"
-      ],
-      "id": "plain-robot-for-code",
-      "title": "Code dropped with no CAD of its own runs on a plain robot, not on someone else's",
-      "kind": "build",
-      "repo": "ftc-simbench-pro",
-      "brief": "Seen in the page 2026-11-20: a BIOBUZZ team's code dropped onto the built-in INTO THE DEEP robot is bound to that robot's lift and arm (CAD-1), and the Shot tab then reports the flywheel motor as \"From the code: 117 rpm\" because the motor figure comes from the arm joint it was wrongly bound to. Fixing the binding rules (item cad-wrong-robot-binding) makes the page ask; this item gives the team the right answer to pick. When code is added while the robot is still the built-in default and its devices do not fit that robot (no strong binding for any mechanism device, or roles such as a shooter that the robot has no joint for), offer, and by default use, a plain robot made from the code: an 18 in box on the drive the code describes (the headless tool already has one: tools/run-opmode.mjs, its field option), with the game-piece mouths of src/payload.js, saying in one line what it is and how to load the team's own CAD or go back to the default robot. The team's code must never move another robot's mechanisms without being asked. Decide the wording and the placement in the page with the impeccable or frontend-design skill; look at it in a browser with the team's Meet0MainTeleOp (C:/Users/hiheo/OneDrive/Documentos/GitHub/Quickstart, read only).",
-      "done_when": [
-        "dropping the team's project onto the default robot ends on a plain robot that drives, takes in and shoots, with one clear line saying so",
-        "the default robot's own OpModes still run on the default robot",
-        "a robot the user loaded is never replaced",
-        "a test that fails before the change",
-        "reviewed, full suite green, pushed, CI green, live build hash equals a local build"
-      ],
-      "added": "2026-11-20T19:41:40.063Z",
-      "updated": "2026-11-20T19:41:40.063Z"
     },
     {
       "state": "todo",

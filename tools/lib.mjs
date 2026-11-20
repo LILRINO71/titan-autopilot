@@ -111,6 +111,21 @@ export function add(queue, item, now, first) {
   return q;
 }
 
+/** A copy of the queue with one item moved to just before another: order is priority, and it changes as work finds things. */
+export function reorder(queue, id, beforeId, now) {
+  const q = Object.assign({}, queue, { items: queue.items.slice() });
+  const i = q.items.findIndex((x) => x.id === id);
+  if (i < 0) throw new Error('no item with id "' + id + '"');
+  if (id === beforeId) throw new Error('an item cannot go before itself');
+  const [it] = q.items.splice(i, 1);
+  const j = q.items.findIndex((x) => x.id === beforeId);
+  if (j < 0) throw new Error('no item "' + beforeId + '" to put it before');
+  q.items.splice(j, 0, Object.assign({}, it, { updated: now }));
+  const errors = validate(q);
+  if (errors.length) throw new Error(errors.join('; '));
+  return q;
+}
+
 export function counts(queue) {
   const c = Object.fromEntries(STATES.map((s) => [s, 0]));
   for (const x of queue.items) c[x.state]++;

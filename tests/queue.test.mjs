@@ -88,6 +88,16 @@ test('queue: a run can add work it found, at the end or at the front of what is 
   assert.throws(() => L.add(q3, item('c'), T0, { before: 'nope' }), /no item "nope"/);
 });
 
+test('queue: an item can be moved ahead of another, and nothing else changes', () => {
+  const q = Q(item('a', { state: 'done', result: 'x' }), item('b'), item('c'), item('d'));
+  assert.deepEqual(L.reorder(q, 'd', 'b', T0).items.map((x) => x.id), ['a', 'd', 'b', 'c']);
+  assert.deepEqual(L.reorder(q, 'b', 'd', T0).items.map((x) => x.id), ['a', 'c', 'b', 'd']);
+  assert.deepEqual(q.items.map((x) => x.id), ['a', 'b', 'c', 'd'], 'the queue given is not changed');
+  assert.throws(() => L.reorder(q, 'b', 'b', T0), /before itself/);
+  assert.throws(() => L.reorder(q, 'zz', 'b', T0), /no item with id "zz"/);
+  assert.throws(() => L.reorder(q, 'b', 'zz', T0), /no item "zz"/);
+});
+
 test('lock: free, held, and stale after two silent hours', () => {
   assert.equal(L.lockState(null, T0), 'free');
   assert.equal(L.lockState({ run: 'r', at: 'not a date' }, T0), 'free');

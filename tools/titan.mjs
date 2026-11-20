@@ -9,6 +9,7 @@
 //   node tools/titan.mjs block <id> --why "what stopped it and what would unblock it"
 //   node tools/titan.mjs todo <id>               put an item back
 //   node tools/titan.mjs add --file item.json [--first | --before <id>]
+//   node tools/titan.mjs move <id> --before <id>
 //   node tools/titan.mjs log --run <id> [--item <id>] --text "one line for the journal"
 //   node tools/titan.mjs beat --run <id>         "still working" (start, done, block and log say it too)
 //   node tools/titan.mjs unlock --run <id>       the run is over
@@ -110,6 +111,12 @@ try {
     const q = L.add(readQueue(), readJson(path.resolve(f)), now(), typeof before === 'string' ? { before } : !!flag('first'));
     writeQueue(q); journal({ item: readJson(path.resolve(f)).id, text: 'added to the queue' });
     console.log('added. ' + brief(q));
+  } else if (cmd === 'move') {
+    const id = argv[1], before = flag('before');
+    if (!id || typeof before !== 'string') die('move <id> --before <id>');
+    const q = L.reorder(readQueue(), id, before, now());
+    writeQueue(q); journal({ item: id, text: 'moved ahead of ' + before });
+    console.log(id + ' is now ahead of ' + before + '. ' + brief(q));
   } else if (cmd === 'log') {
     const text = flag('text'); if (typeof text !== 'string') die('log --text "..."');
     const run = flag('run'), item = flag('item');
