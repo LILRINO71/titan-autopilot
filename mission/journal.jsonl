@@ -1,2 +1,5 @@
 {"at":"2026-11-20T14:39:43.912Z","run":"fable-2026-11-20-0640","item":"land-physics","text":"started"}
 {"at":"2026-11-20T14:39:43.958Z","run":"fable-2026-11-20-0640","text":"the conversation that built the autopilot is working the queue itself; scheduled runs will find the lock held until it goes quiet"}
+{"at":"2026-11-20T14:45:05.700Z","run":"fable-2026-11-20-0640","item":"auto-drive-from-teleop","text":"built ahead on branch titan/auto-drive (stacked on titan/jvm): 5 tests, suite 1115, the hub's Meet 0 check 19 of 19. Waits for land-jvm, then rebase and land"}
+{"at":"2026-11-20T14:47:34.248Z","run":"fable-2026-11-20-0640","item":"stale-shot-settings","text":"built ahead on branch titan/shot-settings: 6 tests, suite 1095, the audit's script prints OK. Needs its review, then land"}
+{"at":"2026-11-20T14:48:45.791Z","run":"fable-2026-11-20-0640","text":"five agents working: reviews of titan/physics, titan/jvm and titan/app; a builder on game F4 F5 F7 F8 (titan/game-fixes); the CAD import audit"}
