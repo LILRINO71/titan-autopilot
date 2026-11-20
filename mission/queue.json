@@ -252,7 +252,7 @@
       "needs": []
     },
     {
-      "state": "doing",
+      "state": "todo",
       "needs": [],
       "id": "cad-kind-names",
       "title": "A part named \"controller\" is not a wheel (CAD-2)",
@@ -266,9 +266,7 @@
         "reviewed, full suite green, pushed, CI green, live build hash equals a local build"
       ],
       "added": "2026-11-20T15:13:49.485Z",
-      "updated": "2026-11-20T19:23:43.032Z",
-      "run": "fable-2026-11-20-1125",
-      "started": "2026-11-20T19:23:43.032Z"
+      "updated": "2026-11-20T19:51:50.658Z"
     },
     {
       "state": "todo",
@@ -529,7 +527,7 @@
       "updated": "2026-11-20T15:14:48.278Z"
     },
     {
-      "state": "todo",
+      "state": "done",
       "needs": [],
       "id": "missing-asset-cache",
       "title": "A missing file is a 404, not the page cached for a year",
@@ -543,7 +541,10 @@
         "reviewed, full suite green, pushed, CI green, live build hash equals a local build"
       ],
       "added": "2026-11-20T15:13:49.940Z",
-      "updated": "2026-11-20T15:13:49.940Z"
+      "updated": "2026-11-20T19:55:21.347Z",
+      "run": "fable-2026-11-20-1125",
+      "started": "2026-11-20T19:51:50.790Z",
+      "result": "On main as 61ea312: site/404.html, so Cloudflare Pages no longer answers unknown addresses with the app. Live: /engine-00000000.js and /nope-xyz answer 404 with Cache-Control: no-store (it was 200 text/html, immutable for a year); /, /terms and the Functions as before; CI green; live build 4c43c74c unchanged. The page already falls back to running jobs on the page when its worker file is gone, so no reload message was needed. No independent review: a static page, checked on the branch preview and on the live site."
     },
     {
       "state": "todo",
