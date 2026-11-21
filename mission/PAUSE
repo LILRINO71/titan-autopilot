@@ -1,0 +1,4 @@
+Paused by the owner on 2026-11-20 at about 16:45 PST ("take a pause on this ... work on Waggle more").
+Scheduled runs stop at preflight while this file exists. To resume Operation Titan: delete this file
+(here or on github.com) and push; the next scheduled run, or anyone following RUNBOOK.md, carries on
+from mission/queue.json. What was in flight when it was paused is the last entry of mission/journal.jsonl.
